@@ -6,7 +6,7 @@ package br.ufjf.dcc025.rogueleague;
 
 /**
  *
- * @author b4bru
+ * @author Bruno dos Santos Silva - 201935031
  */
 public class LeagueMap extends RLMap{
     
@@ -29,14 +29,17 @@ public class LeagueMap extends RLMap{
                 }
             }
         }
+        this.addEntity();
+        this.addEntity();
     }
 
     @Override
     public void addEntity() {
-        if(entities.isEmpty())
-            entities.add(new Entity(2,2,2));
-        else if(entities.size() == 1)
-            entities.add(new Entity(size-3,size-3,3));
+        switch(entities.size()){
+            default -> {}
+            case 0 -> entities.add(new RLChar(2,2,2,0));
+            case 1 -> entities.add(new RLChar(size-3,size-3,3,1));
+        }   
     }
     
 }

@@ -4,11 +4,33 @@
  */
 package br.ufjf.dcc025.rogueleague;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
- * @author b4bru
+ * @author Bruno dos Santos Silva - 201935031
  */
 public class User {
+    //atributes
+    private String userName;
+    private String password;
+    List<RLChar> personagens;
+
+    private User(String userName, String password, List<RLChar> personagens) {
+        this.userName = userName;
+        this.password = password;
+        this.personagens = personagens;
+    }
+    
+    public User newUser(){
+        //insert and check name
+        String un = "default";
+        //insert and confirm password
+        String pw = "default";
+        return new User(un,pw,new ArrayList<>());
+    }
+    
     
 }
 /*

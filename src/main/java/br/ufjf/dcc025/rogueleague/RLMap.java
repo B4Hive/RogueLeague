@@ -5,39 +5,31 @@
 package br.ufjf.dcc025.rogueleague;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import javax.swing.JOptionPane;
 
 /**
  *
- * @author b4bru
+ * @author Bruno dos Santos Silva - 201935031
  */
 public abstract class RLMap {
     /*
-    Missing the map status and the update parts
-    Those missing parts rely on Entities and Skill to be done
+    Missing the map status part
+    Those missing parts rely on Entities and RLSkill to be done
     */
     //atributes
     protected final int size;
     protected final int idGrid[][];
-    protected List<Entity> entities;
     protected int timer;
-    protected Map<Integer,Character> idToChar;
+    protected List<RLChar> entities;
+    
+    protected RLChar target;
+    //statusGrid[size][size] = {0} || {status id} ou
+    //Map<String,Integer> status; //String = "x,y"; Integer = statusID;
     
     //constructor
     public RLMap(int size){
         timer = 0;
-        
-        idToChar = new HashMap<>();
-        idToChar.put(0, '.');
-        idToChar.put(1,'#');
-        idToChar.put(2,'@');
-        idToChar.put(3,'&');
-        idToChar.put(4,'T');
-        idToChar.put(5,'A');
-        idToChar.put(6,'E');
-        
         entities = new ArrayList<>();
         
         this.size = size;
@@ -50,72 +42,126 @@ public abstract class RLMap {
     }
     
     //methods
-    public abstract void addEntity();
+    protected abstract void addEntity();
     
-    public void move(Entity e, char direction){
+    public RLChar getPC(){
+        return entities.get(0);
+    }
+    
+    public void move(RLChar e, char direction){
+        if(!e.getState() || direction == ' ')
+            return;
+        int x = e.getX();
+        int y = e.getY();
         switch(direction){
-            case 'w' -> {
-                if(idGrid[e.getX()][e.getY()-1] == 0)
-                    e.setY(e.getY()-1);
+            case 'w' -> y--;
+            case 's' -> y++;
+            case 'a' -> x--;
+            case 'd' -> x++;
+        }
+        if(!checkColision(e,x,y)){
+            e.setX(x);
+            e.setY(y);
+        }
+    }
+    
+    private boolean checkColision(RLChar e, int x, int y){
+        for(RLChar other : entities){
+            if(other.getX() == x && other.getY() == y && other.getState()){
+                e.castSkill(0, other);
+                return true;
             }
-            case 's' -> {
-                if(idGrid[e.getX()][e.getY()+1] == 0)
-                    e.setY(e.getY()+1);
-            }
-            case 'a' -> {
-                if(idGrid[e.getX()-1][e.getY()] == 0)
-                    e.setX(e.getX()-1);
-            }
-            case 'd' -> {
-                if(idGrid[e.getX()+1][e.getY()] == 0)
-                    e.setX(e.getX()+1);
-            }
-            default -> {
+        }
+        return (this.idGrid[x][y] != 0);
+    }
+    
+    public void updateMap(){
+        for(RLChar npc : entities){
+            npc.updateEffect();
+            if(timer%5 == 0)
+                npc.regenMP();
+            if(npc != getPC() && npc.getState()){
+                int distX = Math.abs(npc.getX() - getPC().getX());
+                int distY = Math.abs(npc.getY() - getPC().getY());
+                if(distX <= 5 && distY <= 5){
+                    if(distX > distY){
+                        if(npc.getX() > getPC().getX())
+                            this.move(npc,'a');
+                        else
+                            this.move(npc, 'd');
+                    }
+                    else{
+                        if(npc.getY() > getPC().getY())
+                            this.move(npc, 'w');
+                        else
+                            this.move(npc,'s');
+                    }
+                }
+                else{
+                    switch((int)(1+Math.random()*4)){
+                        case 1 -> this.move(npc,'w');
+                        case 2 -> this.move(npc,'a');
+                        case 3 -> this.move(npc,'s');
+                        case 4 -> this.move(npc,'d');
+                    }
+                }
+            } else {
             }
         }
         timer++;
     }
     
-    public void autoMove(Entity pc, Entity target){
-        int distX = Math.abs(pc.getX() - target.getX());
-        int distY = Math.abs(pc.getY() - target.getY());
-        while(distX > 1 && distY >1){
-            distX = Math.abs(pc.getX() - target.getX());
-            distY = Math.abs(pc.getY() - target.getY());
-            //exceptions needed here for colision with walls
-            if( distX > distY){
-                if(pc.getX() < target.getX())
-                    move(pc,'d');
-                else if(pc.getX() > target.getX())
-                    move(pc,'a');
-            }
-            else{
-                if(pc.getY() > target.getY())
-                    move(pc,'w');
-                if(pc.getY() < target.getY())
-                    move(pc,'s');
-            }
-        }
-    }
-
     @Override
     public String toString() {
-        String string = "";
+        String string = "Enemy Status\n";
+        if(target != null)
+            string += target.toString() + "\n";
+        else
+            string += "\n\n\n\n";
+        String aimIn;
+        String aimOut;
         for(int y = 0; y < size; y++){
             for(int x = 0; x < size; x++){
+                aimIn = " ";
+                aimOut = " ";
                 int printed = idGrid[x][y];
-                for(Entity e : entities){
-                    if(e.getX() == x && e.getY() == y)
+                for(RLChar e : entities){
+                    if(e.getX() == x && e.getY() == y && e.getState()){
                         printed = e.getId();
+                        if(e == target){
+                            aimIn = "[";
+                            aimOut = "]";
+                        }
+                    }
                 }
-                string += " " + idToChar.get(printed) + " ";
-                //sub these spaces for status whenever entities are done
+                string += aimIn + RLData.mapIdBank.get(printed) + aimOut;
             }
             string += "\n";
         }
-        string += "Timer: " + timer;
-        string += "\n";
+        string += "Timer: " + timer + "\n";
+        string += "\nYour Status\n" + entities.get(0).toString();
         return string;
+    }
+    
+    public void aimSkill(){
+        for(RLChar e : entities){
+            int distX = Math.abs(getPC().getX() - e.getX());
+            int distY = Math.abs(getPC().getY() - e.getY());
+            if(distX <=5 && distY <=5 && e!= getPC()){
+                if(target == null){
+                    target = e;
+                    break;
+                }
+                else if(entities.indexOf(target) < entities.indexOf(e)){
+                    target = e;
+                    break;
+                }
+                else if(entities.indexOf(e) == entities.size()-1){
+                    target = null;
+                    break;
+                }
+            }
+        }
     }
     
 }
@@ -132,13 +178,16 @@ Create/Edit/Delete{
 }
 Owns{
 Classes:
-    Entity;
+    RLChar;
     Status;
 }
 Methods{
-    Move Entity;
+    Move RLChar;
     Update Status;
-    Add/Remove Entity;
+    Add/Remove RLChar;
     Print;
 }
+
+Screen Model:
+
 */
