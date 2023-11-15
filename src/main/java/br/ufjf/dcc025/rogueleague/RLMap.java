@@ -6,7 +6,6 @@ package br.ufjf.dcc025.rogueleague;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -21,7 +20,7 @@ public abstract class RLMap {
     protected final int size;
     protected final int idGrid[][];
     protected int timer;
-    protected List<RLChar> entities;
+    protected List<RLChar> characters;
     
     protected RLChar target;
     //statusGrid[size][size] = {0} || {status id} ou
@@ -30,7 +29,7 @@ public abstract class RLMap {
     //constructor
     public RLMap(int size){
         timer = 0;
-        entities = new ArrayList<>();
+        characters = new ArrayList<>();
         
         this.size = size;
         idGrid = new int[size][size];
@@ -42,10 +41,10 @@ public abstract class RLMap {
     }
     
     //methods
-    protected abstract void addEntity();
+    protected abstract void addEntity(int team);
     
     public RLChar getPC(){
-        return entities.get(0);
+        return characters.get(0);
     }
     
     public void move(RLChar e, char direction){
@@ -66,7 +65,7 @@ public abstract class RLMap {
     }
     
     private boolean checkColision(RLChar e, int x, int y){
-        for(RLChar other : entities){
+        for(RLChar other : characters){
             if(other.getX() == x && other.getY() == y && other.getState()){
                 e.castSkill(0, other);
                 return true;
@@ -75,12 +74,8 @@ public abstract class RLMap {
         return (this.idGrid[x][y] != 0);
     }
     
-    public void updateMap(){
-        for(RLChar npc : entities){
-            npc.updateEffect();
-            if(timer%5 == 0)
-                npc.regenMP();
-            if(npc != getPC() && npc.getState()){
+    private void AI(RLChar npc){
+        if(npc.getState() && npc != getPC()){
                 int distX = Math.abs(npc.getX() - getPC().getX());
                 int distY = Math.abs(npc.getY() - getPC().getY());
                 if(distX <= 5 && distY <= 5){
@@ -105,27 +100,44 @@ public abstract class RLMap {
                         case 4 -> this.move(npc,'d');
                     }
                 }
-            } else {
             }
-        }
-        timer++;
     }
     
-    @Override
-    public String toString() {
+    public void updateMap(){
+        timer++;
+        for(RLChar c : characters){
+            c.updateEffect();
+            if(timer%5 == 0)
+                c.regenMP();
+            AI(c);
+        }
+    }
+    
+    public String printMap(int zoom){
         String string = "Enemy Status\n";
         if(target != null)
-            string += target.toString() + "\n";
+            string += target.getStatBar() + "\n";
         else
             string += "\n\n\n\n";
         String aimIn;
         String aimOut;
-        for(int y = 0; y < size; y++){
-            for(int x = 0; x < size; x++){
+        int i = getPC().getX();
+        int j = getPC().getY();
+        if(i - zoom < 0)
+            i = zoom;
+        if(i + zoom >= size)
+            i = size - zoom;
+        if(j - zoom < 0)
+            j = zoom;
+        if(j + zoom >= size)
+            j = size - zoom;
+        
+        for(int y = j - zoom; y < j + zoom; y++){
+            for(int x = i - zoom; x < i + zoom; x++){
                 aimIn = " ";
                 aimOut = " ";
                 int printed = idGrid[x][y];
-                for(RLChar e : entities){
+                for(RLChar e : characters){
                     if(e.getX() == x && e.getY() == y && e.getState()){
                         printed = e.getId();
                         if(e == target){
@@ -138,13 +150,17 @@ public abstract class RLMap {
             }
             string += "\n";
         }
+        
         string += "Timer: " + timer + "\n";
-        string += "\nYour Status\n" + entities.get(0).toString();
+        string += "\nYour Status\n" + getPC().getStatBar();
+        string += "\n" + getPC().getKitBar();
+        string += "\n" + getPC().listEffects();
+        
         return string;
     }
     
     public void aimSkill(){
-        for(RLChar e : entities){
+        for(RLChar e : characters){
             int distX = Math.abs(getPC().getX() - e.getX());
             int distY = Math.abs(getPC().getY() - e.getY());
             if(distX <=5 && distY <=5 && e!= getPC()){
@@ -152,11 +168,11 @@ public abstract class RLMap {
                     target = e;
                     break;
                 }
-                else if(entities.indexOf(target) < entities.indexOf(e)){
+                else if(characters.indexOf(target) < characters.indexOf(e)){
                     target = e;
                     break;
                 }
-                else if(entities.indexOf(e) == entities.size()-1){
+                else if(characters.indexOf(e) == characters.size()-1){
                     target = null;
                     break;
                 }
@@ -187,7 +203,5 @@ Methods{
     Add/Remove RLChar;
     Print;
 }
-
-Screen Model:
 
 */

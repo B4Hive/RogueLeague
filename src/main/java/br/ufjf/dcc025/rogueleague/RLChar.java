@@ -15,36 +15,55 @@ public class RLChar {
     //atributes
     private int x;
     private int y;
+    
     private final int id;
+    private final int team;
     
     private boolean state;
-    private int team;
     
-    private double hp[] = new double[2];
-    private int mp[] = new int[2];
+    private final double hp[] = new double[2];
+    private final int mp[] = new int[2];
+    
     private int xp;
     private int lvl;
+    
     private double str;
     private double res;
     private double dex;
     
-    final RLSkill kit[] = new RLSkill[5];
-    List<double[]> effects;
+    final RLSkill kit[];
+    List<double[]> effects = new ArrayList<>();
     
     //constructors
-    public RLChar(int x, int y, int id, int team) {
+    private RLChar(int x, int y, int id, int team, double str, double res, double dex, RLSkill[] kit) {
         this.x = x;
         this.y = y;
+        
         this.id = id;
-        this.state = true;
         this.team = team;
+        
+        this.state = true;
+        
+        this.xp = 0;
+        this.lvl = 1;
+        
+        this.str = str;
+        this.res = res;
+        this.dex = dex;
+        
+        this.hp[0] = (res*10);
+        this.hp[1] = this.hp[0];
+        this.mp[0] = lvl * 10;
+        this.mp[1] = this.mp[0];
+        
+        this.kit = kit;
+    }
+    
+    public static RLChar createRandChar (int x, int y, int id, int team) {
         int strMod = 1;
 	int resMod = 1;
 	int dexMod = 1;
 	while(strMod == resMod && resMod == dexMod){
-            strMod = 1;
-            resMod = 1;
-            dexMod = 1;
             for(int i=0; i<3; i++){
                 double rand = Math.random();
                 if(rand < 0.34)
@@ -54,31 +73,61 @@ public class RLChar {
                 else if(rand > 0.66 && rand < 1)
                     dexMod++;
             }
+            if(strMod == resMod && resMod == dexMod){
+                strMod = 1;
+                resMod = 1;
+                dexMod = 1;
+            }
         }
-        this.str = strMod;
-        this.res = resMod;
-        this.dex = dexMod;
-        this.xp = 0;
-        this.lvl = 1;
+        int str = strMod;
+        int res = resMod;
+        int dex = dexMod;
         
-        this.hp[0] = (res*10);
-        this.hp[1] = this.hp[0];
-        this.mp[0] = lvl * 10;
-        this.mp[1] = this.mp[0];
-        /*
-        kit[0] = basic attack
-        kit[1-3] = skill
-        kit[4] = basic heal
-        kit[5] = passive/ulti (the passive is active only while the ulti isn't charged)
-        */
-        kit[0] = RLData.strSkillBank.get("ba");
-        kit[1] = RLData.strSkillBank.get("sm1");
-        kit[2] = RLData.strSkillBank.get("be");
-        kit[3] = RLData.resSkillBank.get("be");
-        kit[4] = RLData.resSkillBank.get("bh");
-        //kit[5] = RLData.skillBank.get("ulti");
-        
-        effects = new ArrayList<>();
+        //getKit(int str, int res, int dex)
+        RLSkill kit[] = new RLSkill[4];
+        kit[0] = RLData.skillBank.get("BasicAttack");
+        kit[1] = RLData.skillBank.get("StrongAttack");
+        kit[2] = RLData.skillBank.get("DOT");
+        kit[3] = RLData.skillBank.get("BasicHeal");
+        RLChar temp = new RLChar(x, y, id, team, str, res, dex, kit);
+        System.out.print(temp.toString());
+        return temp;
+    }
+    
+    public static RLChar importChar (int x, int y, int team, String info) {
+        //id=2, str=3.0, res=2.0, dex=1.0, kit=BasicAttack/Strong M.Hit/DOT/BasicHeal
+        int id = 0;
+        double str = 0;
+        double res = 0;
+        double dex = 0;
+        String k[] = null;
+        String attributes[] = info.split(", ");
+        for(String a : attributes){
+            String temp[] = a.split("=");
+            switch(temp[0]){
+                case "id" -> {
+                    id = Integer.parseInt(temp[1]);
+                }
+                case "str" -> {
+                    str = Double.parseDouble(temp[1]);
+                }
+                case "res" -> {
+                    res = Double.parseDouble(temp[1]);
+                }
+                case "dex" -> {
+                    dex = Double.parseDouble(temp[1]);
+                }
+                case "kit" -> {
+                    k = temp[1].split("/");
+                }
+            }
+        }
+        //getKit(int str, int res, int dex)
+        RLSkill kit[] = new RLSkill[k.length];
+        for(int i = 0; i < kit.length; i++){
+            kit[i] = RLData.skillBank.get(k[i]);
+        }
+        return new RLChar(x, y, id, team, str, res, dex, kit);
     }
     
     //getters & setters
@@ -93,6 +142,9 @@ public class RLChar {
     }
     public boolean getState(){
         return state;
+    }
+    public boolean isEnemy(RLChar other) {
+        return (this.team != other.team);
     }
     public double getHp() {
         return hp[0];
@@ -130,6 +182,7 @@ public class RLChar {
         }
         else{
             this.state = true;
+            
         }
             
     }
@@ -153,24 +206,28 @@ public class RLChar {
         else
             this.hp[0] = this.hp[1];
     }
+    
     void castSkill(int i, RLChar e){
         if(e==null)
             return;
-        if(this.mp[0] >= this.kit[i].cost){
-            this.mp[0] -= this.kit[i].cost;
+        if(this.mp[0] >= this.kit[i].getCost() && !getCooldown(i)){
+            this.mp[0] -= this.kit[i].getCost();
             this.kit[i].calcSkill(this, e);
+            this.startCooldown(i);
         }
     }
+    
     void regenMP(){
         if(this.mp[0] < this.mp[1]){
             this.mp[0]++;
         }
     }
+    
     void addEffect(double effect[]){
         double e[] = new double[3];
-        e[0] = effect[0];
-        e[1] = effect[1];
-        e[2] = effect[2] + 1;
+        e[0] = effect[0]; //effect id
+        e[1] = effect[1]; //effect multiplier
+        e[2] = effect[2] + 1; // effect getCooldown
         if(e[0] == RLData.effectBank.get("STR"))
             this.str += e[1];
         else if(e[0] == RLData.effectBank.get("RES"))
@@ -195,20 +252,37 @@ public class RLChar {
                 this.takeDMG(effects.get(i)[1]);
             else if(effects.get(i)[0] == RLData.effectBank.get("HOT"))
                 this.heal(effects.get(i)[1]);
+            
             effects.get(i)[2] = effects.get(i)[2] - 1;
+            
             if(effects.get(i)[2] == 0)
                 removeEffect(effects.get(i));
             else
                 i++;
         }
     }
-    @Override
-    public String toString() {
+    
+    private void startCooldown(int i){
+        double cdEffect[] = new double[3];
+        cdEffect[0] = RLData.effectBank.get("CD");
+        cdEffect[1] = i;
+        cdEffect[2] = this.kit[i].getCooldown();
+        this.addEffect(cdEffect);
+    }
+    boolean getCooldown(int i){
+        for(double[] e : effects){
+            if(e[0] == RLData.effectBank.get("CD") && e[1] == i)
+                return true;
+        }
+        return false;
+    }
+    
+    public String getStatBar(){
         String rlchar = "";
         //hp bar
-        int hpPercent = (int) (hp[0]/hp[1]*60);
+        int hpPercent = (int) (hp[0]/hp[1]*10);
         String hpBar = "HP = 0[";
-        for(int i = 0; i<60; i++){
+        for(int i = 0; i<10; i++){
             if(i<hpPercent)
                 hpBar += "#";
             else
@@ -223,6 +297,49 @@ public class RLChar {
         rlchar += stats;
         return rlchar;
     }
+    public String getKitBar(){
+        String k = "Skills\n";
+        for(int i=0; i < kit.length; i++){
+            k += "[" + String.valueOf(i);
+            k += "] " + kit[i].toString();
+            for(double[] e : effects){
+                if(e[0] == RLData.effectBank.get("CD") && e[1] == i){
+                    k += " CD: " + e[2];
+                }
+            }
+            k += "\n";
+        }
+        return k;
+    }
+    
+    public String listEffects(){
+        String e = "Effects: ";
+        for(double[] ef : effects){
+            for(String key : RLData.effectBank.keySet()){
+                if(RLData.effectBank.get(key) == ef[0] && !key.equals("CD")){
+                    e += key + ", " + String.valueOf(ef[1]) + ", " + String.valueOf(ef[2]) + "\n";
+                    break;
+                }
+            }
+        }
+        return e;
+    }
+    
+    private String kitExport(){
+        String k = "";
+        for(RLSkill s : kit){
+            k += s.getName() + "/";
+        }
+        k = k.substring(0, k.length()-1);
+        return k;
+    }
+    
+    @Override
+    public String toString() {
+        return "RLChar:" + "id=" + id + ", str=" + str + ", res=" + res + ", dex=" + dex + ", kit=" + kitExport() + ";\n";
+    }
+    
+    
 }
 /*
 Subclasses{

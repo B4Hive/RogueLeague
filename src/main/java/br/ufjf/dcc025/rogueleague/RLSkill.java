@@ -10,27 +10,32 @@ package br.ufjf.dcc025.rogueleague;
  */
 public abstract class RLSkill {
     //atributes
-    protected final String description;
-    protected final double multiplier;
-    protected final double cost;
-    protected final int cooldown;
-    protected final int range; //cityblock distance(self = 0, melee = 1, ranged >= 2)
+    private final String name;
+    private final double multiplier;
+    private final String scalling;
+    private final int cost;
+    private final int cooldown;
+    private final int range; //cityblock distance(self = 0, melee = 1, ranged >= 2)
 
     //constructor
-    public RLSkill(String description, double multiplier, double cost, int cooldown, int range) {
-        this.description = description;
+    public RLSkill(String name, double multiplier, String scalling, int cost, int cooldown, int range) {
+        this.name = name;
         this.multiplier = multiplier;
+        this.scalling = scalling;
         this.cost = cost;
         this.cooldown = cooldown;
         this.range = range;
     }
     
     //getters
-    public String getDescription() {    
-        return description;
+    public String getName(){
+        return name;
     }
     public double getMultiplier() {
         return multiplier;
+    }
+    public String getScalling(){
+        return scalling;
     }
     public double getCost() {
         return cost;
@@ -41,12 +46,16 @@ public abstract class RLSkill {
     public int getRange() {
         return range;
     }
+    
+    public abstract String getDescription();
     //methods
     abstract void calcSkill(RLChar caster, RLChar target);
 
     @Override
     public String toString() {
-        return "Skill\n" + description;
+        String temp = getClass() + "";
+        String split[] = temp.split("\\.");    
+        return split[split.length - 1] + ":" + "name=" + name + ", multiplier=" + multiplier + ", scalling=" + scalling + ", cost=" + cost + ", cooldown=" + cooldown + ", range=" + range + ';';
     }
     
 }

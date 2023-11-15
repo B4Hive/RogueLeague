@@ -16,29 +16,29 @@ public class LeagueMap extends RLMap{
         for(int y = 0; y < size; y++){
             for(int x = 0; x < size; x++){
                 if(x != 0 && y != 0 && x != size-1 && y != size-1){
-                    if( x > 0 && x < 4)
+                    if( x > 0 && x < 6)
                         idGrid[x][y] = 0;
-                    if( x < size-1 && x > size-5)
+                    if( x < size-1 && x > size-7)
                         idGrid[x][y] = 0;
-                    if( y > 0 && y < 4)
+                    if( y > 0 && y < 6)
                         idGrid[x][y] = 0;
-                    if( y < size-1 && y > size-5)
+                    if( y < size-1 && y > size-7)
                         idGrid[x][y] = 0;
-                    if( x >= y-2 && x <= y+2 )
+                    if( x >= y-3 && x <= y+3 )
                         idGrid[x][y] = 0;
                 }
             }
         }
-        this.addEntity();
-        this.addEntity();
+        this.addEntity(0);
+        this.addEntity(1);
     }
 
     @Override
-    public void addEntity() {
-        switch(entities.size()){
+    public void addEntity(int team) {
+        switch(team){
             default -> {}
-            case 0 -> entities.add(new RLChar(2,2,2,0));
-            case 1 -> entities.add(new RLChar(size-3,size-3,3,1));
+            case 0 -> characters.add(RLChar.importChar(3,3,team, "id=101, str=1.0, res=2.0, dex=3.0, kit=BasicShot/AimedShot/DOT/HOT"));
+            case 1 -> characters.add(RLChar.createRandChar(size-4,size-4,102 , team));
         }   
     }
     

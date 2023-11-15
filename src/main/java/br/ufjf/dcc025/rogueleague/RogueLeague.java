@@ -4,8 +4,7 @@
 
 package br.ufjf.dcc025.rogueleague;
 
-import java.awt.Font;
-import javax.swing.UIManager;
+import java.io.IOException;
 
 /**
  *
@@ -13,17 +12,13 @@ import javax.swing.UIManager;
  */
 public class RogueLeague {
     
-    
-    
-    public static void main(String[] args) {
-        UIManager.put("OptionPane.messageFont", new Font("Lucida Console", Font.PLAIN, 14));
+    public static void main(String[] args) throws IOException {
         RLData.initData();
         Screen teste = new Screen();
         teste.show();
-        //RLMap test = new LeagueMap(15);
-        //test.tempScreen();
-        
+        RLData.exportData();
     }
+    
 }
 
 /*
@@ -34,8 +29,9 @@ Classes:
         Personalized;
     }
     Entity{
-        Character;
+        Character; (may be named as emotions for lore)
         Tower;
+        Nexus;
     }
     Skill{
         Sustain;
@@ -46,4 +42,9 @@ Classes:
         Admin;
         Player;
     }
+GameModes{
+    Deathmatch;
+    Normal Game;
+    Acumulação de XP?;
+}
 */

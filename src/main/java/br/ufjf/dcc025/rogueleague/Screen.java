@@ -35,19 +35,19 @@ public class Screen extends javax.swing.JFrame {
         newMenuItem = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
-        contentsMenuItem = new javax.swing.JMenuItem();
+        controlsMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(960, 720));
+        setPreferredSize(new java.awt.Dimension(600, 400));
         setSize(getPreferredSize());
 
         content.setEditable(false);
         content.setColumns(20);
-        content.setFont(new java.awt.Font("Lucida Console", 1, 15)); // NOI18N
+        content.setFont(new java.awt.Font("Lucida Console", 1, 14)); // NOI18N
         content.setRows(5);
         content.setText("Files -> New");
-        content.setMinimumSize(new java.awt.Dimension(960, 720));
+        content.setMinimumSize(new java.awt.Dimension(120, 120));
         content.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 controls(evt);
@@ -80,9 +80,14 @@ public class Screen extends javax.swing.JFrame {
         helpMenu.setMnemonic('h');
         helpMenu.setText("Help");
 
-        contentsMenuItem.setMnemonic('c');
-        contentsMenuItem.setText("Contents");
-        helpMenu.add(contentsMenuItem);
+        controlsMenuItem.setMnemonic('c');
+        controlsMenuItem.setText("Controls");
+        controlsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                controlsMenuItemActionPerformed(evt);
+            }
+        });
+        helpMenu.add(controlsMenuItem);
 
         aboutMenuItem.setMnemonic('a');
         aboutMenuItem.setText("About");
@@ -118,12 +123,11 @@ public class Screen extends javax.swing.JFrame {
 
     private void newMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newMenuItemActionPerformed
         // TODO add your handling code here:
-        String temp = JOptionPane.showInputDialog("Input map size");
-        //tratamento de string
-        map = new LeagueMap(Integer.parseInt(temp));
-        content.setText(map.toString());
+        // verificação de login primeiro
+        map = new LeagueMap(50);
+        content.setText(map.printMap(zoom));
     }//GEN-LAST:event_newMenuItemActionPerformed
-
+    
     private void controls(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_controls
         // TODO add your handling code here:
         if(map != null){
@@ -157,15 +161,24 @@ public class Screen extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "You Died");
                 System.exit(0);
             }
-            if(!map.entities.get(1).getState()){
+            if(!map.characters.get(1).getState()){
                 JOptionPane.showMessageDialog(null, "You Win");
                 System.exit(0);
             }
-            String cont = map.toString();
-            //cont += map.entities.get(1).toString();
+            String cont = map.printMap(zoom);
             content.setText(cont);
         }
     }//GEN-LAST:event_controls
+
+    private void controlsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_controlsMenuItemActionPerformed
+        // TODO add your handling code here:
+        String help = "Controls:\n";
+        help += "w, a, s, d = movement\n";
+        help += "e = choose target\n";
+        help += "1, 2, 3, 4 = cast skills\n";
+        help += "\n";
+        JOptionPane.showMessageDialog(rootPane, help);
+    }//GEN-LAST:event_controlsMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -203,11 +216,11 @@ public class Screen extends javax.swing.JFrame {
     }
     
     private RLMap map;
-    
+    int zoom = 10;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JTextArea content;
-    private javax.swing.JMenuItem contentsMenuItem;
+    private javax.swing.JMenuItem controlsMenuItem;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;

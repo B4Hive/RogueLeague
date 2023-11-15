@@ -10,22 +10,21 @@ package br.ufjf.dcc025.rogueleague;
  */
 public class DamageSkill extends RLSkill {
 
-    private DamageSkill(String description, double multiplier, double cost, int cooldown, int range) {
-        super(description, multiplier, cost, cooldown, range);
-    }
-    
-    public static DamageSkill create(double multiplier, double cost, int cooldown, int range) {
-        String description = "Deals " + multiplier + "% of STR as damage";
-        description += "\nCost: " + cost + " MP";
-        description += "\nCooldown: " + cooldown + " turns";
-        description += "\nRange: " + range;
-        return new DamageSkill(description, multiplier, cost, cooldown, range);
+    public DamageSkill(String name, double multiplier, String scalling, int cost, int cooldown, int range) {
+        super(name, multiplier, scalling, cost, cooldown, range);
     }
     
     @Override
     void calcSkill(RLChar caster, RLChar target) {
-        double calc = (caster.getStr() * multiplier/100);
-        target.takeDMG(calc);
+        if(caster.isEnemy(target)){
+            double calc = caster.getStr() * getMultiplier();
+            target.takeDMG(calc);
+        }
+    }
+
+    @Override
+    public String getDescription() {
+        return "NYI";
     }
     
 }
