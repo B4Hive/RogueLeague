@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 public class RogueLeague {
     
     public static void main(String[] args) {
-        JOptionPane.showMessageDialog(null, "This will be a game someday...", "RogueLeague", 0);
+        JOptionPane.showMessageDialog(null, "There's nothing to see here yet.", "RogueLeague", 0);
     }
     
 }
