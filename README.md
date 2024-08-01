@@ -1,20 +1,19 @@
 
-# RogueLeague Project
+# **RogueLeague Project**
 
-1) Intro:
+## 1) Intro:
+
 
     A turn-based single player game made with the goal of "simulating" the experience of a MOBA (multiplayer online battle arena).
 
-    Made fully on Java, using Swing as engine for GUI.
+    Made fully on Java, using Swing as engine for GUI (just because I want).
 
     Obviously not a MOBA game, since it'll be a single player game.
 
     Closest category for this would likely be a made up category, a Singleplayer offline battle arena, so SOBA (feeling hungry yet?).
 
 
-
-2) Gameplay Plans:
-
+## 2) Gameplay Plans:
 
 
     My plans (that may change while I develop it) are to make the gameplay function as following:
@@ -65,25 +64,25 @@
 
 
 
-3) Program Structure:
+## 3) Program Structure:
 
-    Engine Class:
+###    Engine Class:
 
         Manage the gameplay by getting the player's inputs and calling the required methods to return the results of said action.
 
-    Screen Class:
+###    Screen Class:
 
         Display the current state of the arena, with the character's positions, information (abilities) and status.
 
         Read the player's inputs directly and deliver them to the engine, as well as printing the results on screen.
 
-    Map Class:
+###    Map Class:
 
         Stores the character's positions on the map, as well as the rest of the map's layout.
 
         The necessary methods for movement are on this class.
 
-    Character Class:
+###    Character Class:
 
         Has the character's Status (HP,MP, XP, LV, etc), a list of the character's abilities and a list of the effects currently active.
 
@@ -91,7 +90,7 @@
 
         The secondary objectives are considered characters.
 
-    Ability Class:
+###    Ability Class:
 
         Stores a list of every character's abilities, as well as their respective effects.
 
@@ -107,7 +106,7 @@
 
             Buff: meant to apply a positive effect to a ally;
 
-    Effect Class:
+###    Effect Class:
 
         Stores the types of effects.
 
@@ -131,66 +130,59 @@
 
             Wound/Inhibit/Cripple/Injury: prevents healing;
 
-    Data Class:
+###    Data Class:
 
         Handles the management for the game data, such as loading and saving the data on external files.
 
 
 
-4) Versioning:
+## 4) Versioning:
 
-    Plan:
+###    Plan:
 
-    0.0) Planning Done;
 
-    0.1) Draft for the main classes;
+    0.1) Map Class:
 
-    0.2) Map Class:
+        0.1.1) Map Generation and Info Getters in order to print it;
 
-        0.2.1) Map Generation and Info Getters in order to print it;
+        0.1.2) Movement with template character;
 
-        0.2.2) Movement with template characters;
+        0.1.3) Colision effect with a boolean return in order to facilitate future features;
 
-        0.2.3) Colision effect with a boolean return in order to facilitate future features;
+    0.2) Abilities/Effect Class: Drafting the Ability types (subclasses); Filling out the required methods for skill casts/calc;
 
-    0.3) Effect Class: Including the Effect types (subclasses) draft;
+        0.2.1) Filling in the required methods for each effect type including duration settings;
+        
+        0.2.2) Making template Effect Abilities (Basic X : X -> Effect Subclass + Instant Effects);
 
-        0.3.1) Filling in the required methods for each effect type including duration settings;
+    0.3) Character Class: Drafting the Template Character with Basic Abilities;
 
-    0.4) Abilities Class: Drafting the Ability types (subclasses); Filling out the required methods for skill casts/calcs;
+        0.3.1) Vinculating the Character's commands with the Map/Ability commands (Ability Targeting, Character Movement, Colision Action, etc);
 
-        0.4.1) Making the first template Abilities (Basic X : X -> Effect Subclass + Instant Effects)
+    0.4) Engine Class: Making a functional "engine" in order to run further tests on game functionalities and interactions between classes;
 
-    0.5) Character Class: Drafting the Template Character with Basic Abilities;
+        0.4.x) Improving and polishing each of the previous implemented content;
 
-        0.5.1) Vinculating the Character's commands with the Map/Ability commands
+    0.5) Data Class: Setting methods to extract and import data from game to files;
 
-            Ability Targeting, Character Movement, Colision Action, etc;
+        0.5.x) Implementing each of the Class exports;
 
-    0.6) Engine Class: Making a functional "engine" in order to run further tests on game functionalities and interactions between classes;
+    0.6) Screen Class: Putting everything together on Swing, Designing the screens and overall layout of GUI;
 
-        0.6.x) Improving and polishing each of the previous implemented content;
+        0.6.1) Game Screen;
 
-    0.7) Data Class: Setting methods to extract and import data from game to files;
+        0.6.2) Mapping Controls;
 
-        0.7.x) Finishing each of the Class exports;
+        0.6.3) Character Info GUI;
 
-    0.8) Screen Class: Putting everything together on Swing, Designing the screens and overall layout of GUI;
+        0.6.4) Main Menu;
 
-        0.8.1) Game Screen;
+        0.6.5) In Game Options;
 
-        0.8.2) Mapping Controls;
+    0.7) Testing and Refining:
 
-        0.8.3) Character Info GUI;
+        0.7.x) New subversion for each improvement/fix until the game is playable
 
-        0.8.4) Main Menu;
-
-        0.8.5) In Game Options;
-
-    0.9) Testing and Refining:
-
-        0.9.x) New subversion for each improvement/fix until the game is playable
-
-        0.9.x) Character creation
+        0.7.x) Character creation
 
     1.0) Project Finished! (now maintain the updates of new ideas)

@@ -13,7 +13,8 @@ import javax.swing.JOptionPane;
 public class RogueLeague {
     
     public static void main(String[] args) {
-        JOptionPane.showMessageDialog(null, "There's nothing to see here yet.", "RogueLeague", 0);
+        MapGrid test = MapGrid.create(20, "rift", 10);
+        test.printGrid();
     }
     
 }
