@@ -38,9 +38,9 @@ public class MapGrid {
                             temp.grid[i][j] = 0;
                         break;
                     case "rift":
-                        if(i > 0 && i < (size+1)*d || j > 0 && j < (size-1)*d)
+                        if(i > 0 && i < (size)*d || j > 0 && j < (size)*d)
                             temp.grid[i][j] = 0;
-                        if(i > size-(size*d) && i < size-1 || j > size-(size*d) && j < size-1)
+                        if(i >= size-(size*d) && i < size-1 || j >= size-(size*d) && j < size-1)
                             temp.grid[i][j] = 0;
                         if(i > j - (size*d) && i < j + (size*d))
                             temp.grid[i][j] = 0;
