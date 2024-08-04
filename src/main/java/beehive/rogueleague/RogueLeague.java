@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 public class RogueLeague {
     
     public static void main(String[] args) {
-        MapGrid test = MapGrid.create(20, "rift", 10);
+        MapGrid test = MapGrid.create(30, "rift", 10);
         test.printGrid();
     }
     

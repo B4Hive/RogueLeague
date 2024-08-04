@@ -23,10 +23,10 @@ public class MapGrid {
     }
 
     public static MapGrid create(int size, String type, int density) {
-        float d = density/100F;
+        int d = size * density / 100;
         MapGrid temp = new MapGrid(size);
-        if(density < 0 || density > 0.3)
-            d = 0.15F;
+        if(density < 2 || density > 30)
+            d = 15;
 
         for (int j = 0; j < size; j++) {
             for (int i = 0; i < size; i++) {
@@ -38,15 +38,15 @@ public class MapGrid {
                             temp.grid[i][j] = 0;
                         break;
                     case "rift":
-                        if(i > 0 && i < (size)*d || j > 0 && j < (size)*d)
+                        if(i > 0 && i < d || j > 0 && j < d)
                             temp.grid[i][j] = 0;
-                        if(i >= size-(size*d) && i < size-1 || j >= size-(size*d) && j < size-1)
+                        if(i >= size - d && i < size-1 || j >= size - d && j < size-1)
                             temp.grid[i][j] = 0;
-                        if(i > j - (size*d) && i < j + (size*d))
+                        if(i > j - d && i < j + d)
                             temp.grid[i][j] = 0;
                         break;
                     case "random":
-                        if(Math.random() > d)
+                        if(Math.random()*100 > d)
                             temp.grid[i][j] = 0;
                         break;
                 }
@@ -62,7 +62,7 @@ public class MapGrid {
     public void printGrid(){
         for(int i = 0; i < size; i++){
             for(int j = 0; j < size; j++){
-                System.out.print(grid[i][j] + " ");
+                System.out.print(grid[i][j]);
             }
             System.out.println();
         }
