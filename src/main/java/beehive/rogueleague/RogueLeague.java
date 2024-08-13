@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
-
 package beehive.rogueleague;
 
 import javax.swing.JOptionPane;
@@ -13,8 +9,8 @@ import javax.swing.JOptionPane;
 public class RogueLeague {
     
     public static void main(String[] args) {
-        MapGrid test = MapGrid.create(30, "rift", 10);
-        test.printGrid();
+        TempEngine.init();
+        TempEngine.screen();
     }
     
 }
