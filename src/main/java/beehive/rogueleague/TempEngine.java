@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class TempEngine {
     private static MapGrid map;
-    private static Map<Integer, MapEntity> entities;
+    private static Map<Integer, Entity> entities;
     private static char input;
     private static boolean active = false;
 
@@ -14,13 +14,13 @@ public class TempEngine {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Please enter the map size:");
         int size = scanner.nextInt();
-        System.out.println("Please enter the map type:");
+        System.out.println("Please enter the map type (\"basic\", \"rift\", \"random\"):");
         String type = scanner.next();
-        System.out.println("Please enter the map density:");
+        System.out.println("Please enter the map density (2, 30):");
         int density = scanner.nextInt();
 
         map = MapGrid.create(size, type, density);
-        entities = new HashMap<Integer, MapEntity>();
+        entities = new HashMap<>();
 
         System.out.println("How many entities you wish to spawn?");
         int amount = scanner.nextInt();
@@ -33,8 +33,9 @@ public class TempEngine {
                 x = (int) (Math.random() * map.getSize());
                 y = (int) (Math.random() * map.getSize());
             }
-            entities.put(id, new MapEntity(x, y, id));
+            entities.put(id, new Entity(x, y, id));
         }
+        CharacterLocator.init(map, entities);
         active = true;
         System.out.println("Map generated, Entities spawned");
     }
@@ -69,7 +70,7 @@ public class TempEngine {
                             tile = '&';
                     }
                 }
-                System.out.print(tile);
+                System.out.print(" " + tile + " ");
             }
             System.out.println();
         }
@@ -85,7 +86,6 @@ public class TempEngine {
             case 'w', 'W', 'a', 'A', 's', 'S', 'd', 'D':
                 entities.get(0).moveTowards(input);
                 break;
-
             default:
                 break;
         }

@@ -1,16 +1,11 @@
 package beehive.rogueleague;
 
-/**
- *
- * @author BeeHive
- */
-
-public class MapEntity {
+public class Entity {
     private int xPos;
     private int yPos;
     private final int id;
 
-    public MapEntity(int xPos, int yPos, int id) {
+    public Entity(int xPos, int yPos, int id) {
         this.xPos = xPos;
         this.yPos = yPos;
         this.id = id;
@@ -31,20 +26,25 @@ public class MapEntity {
     public int getId() {
         return id;
     }
-
+    private void checkCollisionAndMove(int x, int y) {
+        if(CharacterLocator.getMapCollision(x, y))
+            return;
+        setXPos(x);
+        setYPos(y);
+    }
     public void moveTowards(char direction) {
         switch (direction) {
             case 'W', 'w':
-                setYPos(yPos - 1);
+                checkCollisionAndMove(xPos, yPos-1);
                 break;
             case 'S', 's':
-                setYPos(yPos + 1);
+                checkCollisionAndMove(xPos, yPos + 1);
                 break;
             case 'A', 'a':
-                setXPos(xPos - 1);
+                checkCollisionAndMove(xPos - 1, yPos);
                 break;
             case 'D', 'd':
-                setXPos(xPos + 1);
+                checkCollisionAndMove(xPos + 1, yPos);
                 break;
             default:
                 break;

@@ -1,13 +1,9 @@
 package beehive.rogueleague;
 
-/**
- *
- * @author BeeHive
- */
-
 public class MapGrid {
     private final int size;
     private final int[][] grid;
+
 
     private MapGrid(int size) {
         this.size = size;
