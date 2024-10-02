@@ -6,7 +6,7 @@
 
     A turn-based single player game made with the goal of "simulating" the experience of a MOBA (multiplayer online battle arena).
 
-    Made fully on Java, using Swing as engine for GUI (just because I want).
+    Made fully on Java, using Swing as engine for GUI (just because I want but maybe make it a terminal game instead at least at first).
 
     Obviously not a MOBA game, since it'll be a single player game.
 
@@ -76,19 +76,21 @@
 
         Read the player's inputs directly and deliver them to the engine, as well as printing the results on screen.
 
-###    Map Class:
+###    MapGrid Class:
 
-        Stores the character's positions on the map, as well as the rest of the map's layout.
+        Stores the map's layout, as well as the list of characters on the map.
 
-        The necessary methods for movement are on this class.
+###    Entity Class:
 
-###    Character Class:
+        Has the character's Status (HP,MP, XP, LV, etc), a list of the character's abilities and a list of the effects currently active. Also has the current active map info.
 
-        Has the character's Status (HP,MP, XP, LV, etc), a list of the character's abilities and a list of the effects currently active.
+        The necessary methods for combat and movement are on this class.
 
-        The necessary methods for combat are on this class.
+        The secondary objectives are considered entities.
 
-        The secondary objectives are considered characters.
+###    CharacterLocator Class:
+
+        Stores current active map and which characters are on it for collision and interaction reasons.
 
 ###    Ability Class:
 
