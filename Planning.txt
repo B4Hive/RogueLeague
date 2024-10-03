@@ -143,13 +143,13 @@
 ###    Plan:
 
 
-    0.1) Map Class:
+    0.1) Map Class/Entity Class/CharacterLocator:
 
         0.1.1) Map Generation and Info Getters in order to print it;
 
-        0.1.2) Movement with template character;
+        0.1.2) Movement with template entity;
 
-        0.1.3) Colision effect with a boolean return in order to facilitate future features;
+        0.1.3) Collision effect with a boolean return in order to facilitate future features;
 
     0.2) Abilities/Effect Class: Drafting the Ability types (subclasses); Filling out the required methods for skill casts/calc;
 

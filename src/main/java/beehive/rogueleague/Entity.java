@@ -27,7 +27,7 @@ public class Entity {
         return id;
     }
     private void checkCollisionAndMove(int x, int y) {
-        if(CharacterLocator.getMapCollision(x, y))
+        if(CharacterLocator.getMapCollision(x, y) || CharacterLocator.getEntityCollision(x, y) != null)
             return;
         setXPos(x);
         setYPos(y);

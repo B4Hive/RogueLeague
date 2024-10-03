@@ -1,6 +1,5 @@
 package beehive.rogueleague;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class CharacterLocator {

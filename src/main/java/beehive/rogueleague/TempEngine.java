@@ -57,7 +57,7 @@ public class TempEngine {
     }
 
     private static void printScreen(String footnote){
-        int range = 2;
+        //int range = 2;
         for(int y = 0; y < map.getSize(); y++){
             for(int x = 0; x < map.getSize(); x++){
                 char tile = '.';
