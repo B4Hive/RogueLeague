@@ -82,7 +82,7 @@
 
 ###    Entity Class:
 
-        Has the character's Status (HP,MP, XP, LV, etc), a list of the character's abilities and a list of the effects currently active. Also has the current active map info.
+        Has the character's Status (HP,MP, XP, LV, etc.), a list of the character's abilities and a list of the effects currently active. Also has the current active map info.
 
         The necessary methods for combat and movement are on this class.
 
